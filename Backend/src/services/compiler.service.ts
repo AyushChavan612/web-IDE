@@ -8,6 +8,7 @@ export default function compileCode(
     config: LanguageConfig,
     filePath: string,
     outPath: string,
+    input : string,
     res: Response
 ): void {
     const { command, args } = config.getCompiledCommand!(filePath, outPath);
@@ -26,6 +27,6 @@ export default function compileCode(
             return;
         }
 
-        executeCode(config, filePath , outPath, res);
+        executeCode(config, filePath , outPath, input , res);
     });
 }

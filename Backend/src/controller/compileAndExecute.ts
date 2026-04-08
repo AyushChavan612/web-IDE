@@ -3,11 +3,13 @@ import { join } from 'path';
 import { promises as fileManager } from 'fs';
 import { TEMP_PATH } from '../config/path.config.js';
 import LANGUAGE_CONFIG from '../config/languages.config.js';
-import  compileCode  from '../services/compiler.service.js';
 import  executeCode  from '../services/executer.service.js';
+import  compileCode  from '../services/compiler.service.js';
+
 
 export default async function compileAndExecute(req: Request, res: Response): Promise<void> {
-    const { code, language } = req.body;
+
+    const { code, language , input } = req.body;
 
     if (!code) {
         res.status(400).json({ error: "No code provided" });
@@ -42,17 +44,18 @@ export default async function compileAndExecute(req: Request, res: Response): Pr
     }
     
     try {
-        await fileManager.mkdir(TEMP_PATH, { recursive: true });
         await fileManager.writeFile(filePath, code);
     } catch (error) {
-         console.log(`Error during file setup at path ${filePath}`);
-         res.status(500).json({ error: "Server error during file setup" });
-         return;
+        console.log(`Error during file setup at path ${filePath}`);
+        res.status(500).json({ error: "Server error during file setup" });
+        return;
     }
     
     if (config.isCompiled) {
-         compileCode(config, filePath, outPath, res);
+        compileCode(config, filePath, outPath, input, res);
     } else {
-         executeCode(config, filePath, outPath, res);
+        executeCode(config, filePath, outPath, input, res);
     }
 }
+
+

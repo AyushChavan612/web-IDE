@@ -7,6 +7,7 @@ export default function executeCode(
     config: LanguageConfig,
     filePath : string,
     outPath : string,
+    input : string,
     res: Response
 ): void {
     const { command, args } = config.getExecutionCommand(outPath);
@@ -15,6 +16,11 @@ export default function executeCode(
     let runtimeError = "";
 
     const execution = spawn(command, args);
+
+    if(input){
+        execution.stdin.write(input);
+        execution.stdin.end();
+    }
 
     execution.stdout.on("data", (data) => {
         output += data.toString();

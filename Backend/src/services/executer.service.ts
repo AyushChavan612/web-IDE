@@ -12,9 +12,6 @@ export default function executeCode(
 ): void {
     const { command, args } = config.getExecutionCommand(outPath);
 
-    let output = "";
-    let runtimeError = "";
-
     const execution = spawn(command, args);
 
     if(input){
@@ -23,11 +20,11 @@ export default function executeCode(
     }
 
     execution.stdout.on("data", (data) => {
-        output += data.toString();
+        res.write(data.toString());
     });
 
     execution.stderr.on("data", (data) => {
-        runtimeError += data.toString();
+        res.write("[ERROR_CHUNK]" + data.toString());
     });
 
     execution.on("close", (executionResult) => {
@@ -36,11 +33,6 @@ export default function executeCode(
         } else {
             cleanUp([outPath]);
         }
-
-        if (executionResult !== 0) {
-            res.status(400).json({ error: runtimeError, status: "Runtime Error" });
-        } else {
-            res.status(200).json({ output: output, status: "success" });
-        }
+        res.end();
     });
 }

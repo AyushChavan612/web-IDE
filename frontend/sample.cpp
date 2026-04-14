@@ -57,4 +57,11 @@ int main(){
 input text :
 4
 5 1 5 9
+#include<iostream>
+using namespace std;
+
+int main(){
+    for(int i = 0; i < 10000; ++i)
+    cout << i << " " << "hello world\n";
+}
 */

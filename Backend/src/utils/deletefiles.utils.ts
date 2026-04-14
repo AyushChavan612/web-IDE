@@ -1,12 +1,11 @@
 import { promises as fileManager } from 'fs';
 
-export default async function cleanUp(files: string[]): Promise<void> {
-    for (const filePath of files) {
+export default async function cleanUp(paths: string[]): Promise<void> {
+    for (const targetPath of paths) {
         try {
-            await fileManager.access(filePath); 
-            await fileManager.unlink(filePath); 
+            await fileManager.rm(targetPath, { recursive: true, force: true });
         } catch (error) {
-            console.log(`cleanup skipped for filepath : ${filePath}`);
+            console.log(`cleanup skipped for path : ${targetPath}`);
         }
     }
 }

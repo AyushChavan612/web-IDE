@@ -1,17 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>DevFlow Simple</title>
-    <style>
-        body { background: #1e1e1e; color: white; font-family: sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; }
-        header { padding: 10px; background: #252526; display: flex; gap: 10px; border-bottom: 1px solid #333; }
-        main { display: flex; flex: 1; padding: 10px; gap: 10px; }
-        #editor-container { flex: 2; border: 1px solid #333; }
-        .side-panel { flex: 1; display: flex; flex-direction: column; gap: 10px; }
-        textarea, #output-area { background: #252526; color: #89d185; border: 1px solid #333; padding: 10px; font-family: monospace; resize: none; }
-    </style>
+    <link rel="stylesheet" href="/src/style.css">
 </head>
+
 <body>
     <header>
         <select id="lang-select">
@@ -22,21 +17,22 @@
             <option value="c">c</option>
         </select>
         <select id="font-select">
-           <option value="12">12px</option>
+            <option value="12">12px</option>
             <option value="14">14px</option>
             <option value="16" selected>16px</option>
             <option value="18">18px</option>
-             <option value="20">20px</option>
+            <option value="20">20px</option>
             <option value="22">22px</option>
             <option value="24">24px</option>
         </select>
-        <button id="run-btn" style="background: #007acc; color: white; border: none; padding: 5px 15px; cursor: pointer;">RUN</button>
+        <button id="run-btn"
+            style="background: #007acc; color: white; border: none; padding: 5px 15px; cursor: pointer;">RUN</button>
     </header>
     <main>
         <div id="editor-container"></div>
         <div class="side-panel">
-            <textarea id="input-area" placeholder="Standard Input..." style="height: 20%;"></textarea>
-            <div id="output-area" style="flex: 1; white-space: pre-wrap; overflow-y: auto;">Output will appear here...</div>
+            <textarea id="input-area" placeholder="Standard Input..."></textarea>
+            <div id="output-area"></div>
         </div>
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>

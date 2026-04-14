@@ -1,11 +1,27 @@
 import loader from "@monaco-editor/loader";
+import {Terminal} from "@xterm/xterm"
+import "@xterm/xterm/css/xterm.css";
 
 const editorContainer = document.getElementById("editor-container") as HTMLElement;
 const inputText = document.getElementById("input-area") as HTMLTextAreaElement;
 const runButton = document.getElementById("run-btn") as HTMLButtonElement;
 const fontChanger = document.getElementById("font-select") as HTMLSelectElement;
 const language = document.getElementById("lang-select") as HTMLSelectElement;
-const outputArea = document.getElementById("output-area") as HTMLElement;
+const terminalConatiner = document.getElementById("output-area") as HTMLDivElement;
+
+const terminal = new Terminal({
+     theme: {
+        background: '#252526',
+        foreground: '#ffffff'
+    },
+    fontFamily: 'Consolas, monospace',
+    fontSize: 14,
+    convertEol: true, 
+    scrollback: 50000
+});
+
+terminal.open(terminalConatiner);
+terminal.write("Output will appear here");
 
 loader.init().then((monaco) => {
     
@@ -14,7 +30,7 @@ loader.init().then((monaco) => {
           theme : "vs-dark",
           automaticLayout: true,
           fontSize : 16,
-          minmap : {enabled : false},
+          minimap : {enabled : false},
           wordWrap : "on"
      });
 
@@ -23,9 +39,13 @@ loader.init().then((monaco) => {
           const inputValue = inputText.value;
           const selectedLanguage = language.value;
 
+          if(!userCode.trim()){
+               terminal.write('Please write some code before executing.');
+              return; 
+          }
+
           runButton.innerText = "Running...";
           runButton.disabled = true;
-          outputArea.innerText = "Compiling...";
 
           try{
               const response = await fetch("http://localhost:3000/compile" , {
@@ -40,14 +60,27 @@ loader.init().then((monaco) => {
                  })
               });
 
-              const result = await response.json();
+              const reader = response.body?.getReader();
+              const decoder = new TextDecoder();
 
-              if(result.status === "success"){
-                  outputArea.innerText = result.output;
-                  outputArea.style.color = "white";
-              }else{
-                  outputArea.innerText = result.error;
-                  outputArea.style.color = "red"; 
+              if(!reader){
+                  throw new Error("Failed to read the stream from the server");
+              }
+
+              terminal.reset();
+              
+              while(true){
+                  const {done , value} = await reader.read();
+
+                  if(done){
+                      break;
+                  }
+
+                  let chunk = decoder.decode(value);
+                  if(chunk.includes("[ERROR_CHUNK]")){
+                       chunk = chunk.replace("[ERROR_CHUNK]", "");
+                  } 
+                  terminal.write(chunk);
               }
           }
           catch(error){
@@ -68,5 +101,15 @@ loader.init().then((monaco) => {
           const newLanguage = (event.target as HTMLSelectElement).value;
           const model = editor.getModel();
           monaco.editor.setModelLanguage(model , newLanguage);
+          console.log(newLanguage);
+          if(newLanguage === "java"){
+               window.alert("The name of the class containing public static void main must be Main");
+          }
+     });
+
+     window.addEventListener('resize', () => {
+          editor.layout();    
      });
 });
+
+

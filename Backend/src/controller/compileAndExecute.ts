@@ -24,20 +24,29 @@ export default async function compileAndExecute(req: Request, res: Response): Pr
     }
     
     const fileId = Date.now();
+    const executionDir = join(TEMP_PATH , fileId.toString());
     let filePath = "";
     let outPath = "";
+
+    try {
+        await fileManager.mkdir(executionDir);
+    } catch (error) {
+        console.error("Failed to create execution directory:", error);
+        res.status(500).json({ error: "Server error during file setup" });
+        return;
+    }
 
     if (config.extension !== "java") {
         filePath = join(TEMP_PATH, `${fileId}.${config.extension}`);
     } else {
-        filePath = join(TEMP_PATH, "Main.java");
+        filePath = join(executionDir, "Main.java");
     }
 
     if (config.isCompiled) {
         if (config.extension !== "java") {
             outPath = join(TEMP_PATH, `${fileId}.out`);
         } else {
-            outPath = join(TEMP_PATH, "Main.class");
+            outPath = join(executionDir, "Main.class");
         }
     } else {
         outPath = filePath;
@@ -50,6 +59,9 @@ export default async function compileAndExecute(req: Request, res: Response): Pr
         res.status(500).json({ error: "Server error during file setup" });
         return;
     }
+
+    res.setHeader("Content-Type"  , 'text/plain');
+    res.setHeader("Transfer-Encoding" , 'chunked');
     
     if (config.isCompiled) {
         compileCode(config, filePath, outPath, input, res);

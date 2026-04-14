@@ -14,16 +14,15 @@ export default function compileCode(
     const { command, args } = config.getCompiledCommand!(filePath, outPath);
 
     const compiler = spawn(command, args);
-    let compilationError = "";
 
     compiler.stderr.on("data", (data) => {
-        compilationError += data.toString();
+        res.write("[ERROR_CHUNK]" + data.toString());
     });
 
     compiler.on("close", (compilationResult) => {
         if (compilationResult !== 0) {
             cleanUp([filePath]);
-            res.status(400).json({ error: compilationError, status: "Compilation error" });
+            res.end();
             return;
         }
 

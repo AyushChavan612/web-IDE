@@ -24,7 +24,7 @@ export default function executeCode(
     });
 
     execution.stderr.on("data", (data) => {
-        res.write("[ERROR_CHUNK]" + data.toString());
+        res.write(`\x1b[31m${data.toString()}\x1b[0m`);
     });
 
     execution.on("close", (executionResult) => {

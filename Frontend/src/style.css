@@ -1,0 +1,144 @@
+body {
+    background: #1e1e1e;
+    color: white;
+    font-family: sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+header {
+    padding: 10px;
+    background: #252526;
+    display: flex;
+    gap: 10px;
+    border-bottom: 1px solid #333;
+}
+
+main {
+    display: flex;
+    flex: 1;
+    padding: 10px;
+    gap: 10px;
+    min-height: 0;
+}
+
+#editor-container {
+    flex: 2;
+    border: 1px solid #333;
+    min-width: 0;
+}
+
+.side-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+}
+
+textarea {
+    background: #252526;
+    color: #89d185;
+    border: 1px solid #333;
+    padding: 10px;
+    font-family: monospace;
+    resize: none;
+}
+
+#input-area {
+    flex: 0 0 30%;
+    color: white;
+}
+
+#output-area {
+    flex: 1;
+    min-height: 0;
+    background: #252526;
+    padding: 10px;
+    border: 1px solid #333;
+}
+
+.btn {
+    border: none;
+    padding: 5px 15px;
+    cursor: pointer;
+    color: white;
+    font-family: inherit;
+    font-size: 14px;
+    margin-right: 5px;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-primary { background: #007acc; }
+.btn-danger { background: #d32f2f; }
+.btn-success { background: #2e7d32; }
+.btn-secondary { background: #555; margin-left: 10px; }
+
+
+.modal-overlay {
+    display: none; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    font-family: monospace;
+}
+
+.modal-header {
+    margin-top: 0;
+    border-bottom: 1px solid #555;
+    padding-bottom: 10px;
+}
+.modal-content {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 20px;
+    width: 90%;
+    max-width: 800px;
+    border: 1px solid #555;
+    
+    max-height: 90vh; 
+    overflow-y: auto; 
+    display: block; 
+}
+
+.modal-code-block {
+    background: #000;
+    padding: 10px;
+    border: 1px solid #333;
+    margin-bottom: 20px;
+
+    max-height: none; 
+    height: auto;
+    overflow-y: visible; 
+
+    overflow-x: auto; 
+}
+
+.modal-actions {
+    text-align: right;
+}
+
+.modal-content p strong {
+    display: block;
+    margin-top: 10px;
+    color: #4caf50; 
+}
+
+.modal-content p span {
+    display: block; 
+    margin-left: 0;
+    padding-top: 2px;
+    color: #d4d4d4;
+}

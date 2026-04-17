@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DevFlow Simple</title>
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body>
+    <header>
+        <select id="lang-select">
+            <option value="cpp">C++</option>
+            <option value="python3">Python</option>
+            <option value="java">Java</option>
+            <option value="javascript">javascript</option>
+            <option value="c">c</option>
+        </select>
+        <select id="font-select">
+            <option value="12">12px</option>
+            <option value="14">14px</option>
+            <option value="16" selected>16px</option>
+            <option value="18">18px</option>
+            <option value="20">20px</option>
+            <option value="22">22px</option>
+            <option value="24">24px</option>
+        </select>
+        <button id="run-btn" class="btn btn-primary">RUN</button>
+        <button id="fix-btn" class="btn btn-danger" style="display: none;">Fix Errors</button>
+        <button id="optimize-btn" class="btn btn-success">Optimize</button>
+        <button id="error-btn" class="btn btn-success">Fix Errors</button>
+    </header>
+    
+    <main>
+        <div id="editor-container"></div>
+        <div class="side-panel">
+            <textarea id="input-area" placeholder="Standard Input..."></textarea>
+            <div id="output-area"></div>
+        </div>
+    </main>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+    <script type="module" src="/src/main.ts"></script>
+    
+    <div id="optimize-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="modal-header">OPTIMIZATION RESULT</h3>
+            
+            <p><strong>Time:</strong> <span id="opt-time"></span> &nbsp;&nbsp; <strong>Space:</strong> <span id="opt-space"></span></p>
+            <p><strong>Analysis:</strong> <span id="opt-explaination"></span></p>
+            
+            <pre class="modal-code-block"><code id="opt-code"></code></pre>
+            
+            <div class="modal-actions">
+                <button id="apply-opt-btn" class="btn btn-primary">APPLY CODE</button>
+                <button id="close-opt-btn" class="btn btn-secondary">CLOSE</button>
+            </div>
+        </div>
+    </div>
+        <div id="fixErrorModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="modal-header">ERROR ANALYSIS</h3>
+            
+            <p><strong>Explaination:</strong> <span id="Explaination"></span> </p>
+            <pre class="modal-code-block"><code id="opt-code"></code></pre>
+            
+            <div class="modal-actions">
+                <button id="apply-opt-btn" class="btn btn-primary">APPLY CODE</button>
+                <button id="close-opt-btn" class="btn btn-secondary">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

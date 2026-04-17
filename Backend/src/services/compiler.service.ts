@@ -8,7 +8,7 @@ export default function compileCode(
     config: LanguageConfig,
     filePath: string,
     outPath: string,
-    input : string,
+    input: string,
     res: Response
 ): void {
     const { command, args } = config.getCompiledCommand!(filePath, outPath);
@@ -16,16 +16,16 @@ export default function compileCode(
     const compiler = spawn(command, args);
 
     compiler.stderr.on("data", (data) => {
-        res.write("[ERROR_CHUNK]" + data.toString());
+        res.write(`\x1b[31m${data.toString()}\x1b[0m`);
     });
 
     compiler.on("close", (compilationResult) => {
         if (compilationResult !== 0) {
-            cleanUp([filePath]);
+            cleanUp([filePath,outPath]);
             res.end();
-            return;
+            return ;
         }
 
-        executeCode(config, filePath , outPath, input , res);
+        executeCode(config, filePath, outPath, input, res);
     });
 }

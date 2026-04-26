@@ -57,16 +57,17 @@
             </div>
         </div>
     </div>
-        <div id="fixErrorModal" class="modal-overlay">
+
+    <div id="fixErrorModal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <h3 class="modal-header">ERROR ANALYSIS</h3>
             
-            <p><strong>Explaination:</strong> <span id="Explaination"></span> </p>
-            <pre class="modal-code-block"><code id="opt-code"></code></pre>
+            <p><strong>Explanation:</strong> <span id="error-explanation"></span> </p>
+            <pre class="modal-code-block"><code id="error-code"></code></pre>
             
             <div class="modal-actions">
-                <button id="apply-opt-btn" class="btn btn-primary">APPLY CODE</button>
-                <button id="close-opt-btn" class="btn btn-secondary">CLOSE</button>
+                <button id="apply-error-btn" class="btn btn-primary">APPLY CODE</button>
+                <button id="close-error-btn" class="btn btn-secondary">CLOSE</button>
             </div>
         </div>
     </div>

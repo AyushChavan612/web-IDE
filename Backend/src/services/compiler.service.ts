@@ -9,23 +9,27 @@ export default function compileCode(
     filePath: string,
     outPath: string,
     input: string,
-    res: Response
-): void {
-    const { command, args } = config.getCompiledCommand!(filePath, outPath);
+): Promise<string> {
+    return new Promise((resolve) => {
+        const { command, args } = config.getCompiledCommand!(filePath, outPath);
 
-    const compiler = spawn(command, args);
+        const compiler = spawn(command, args);
 
-    compiler.stderr.on("data", (data) => {
-        res.write(`\x1b[31m${data.toString()}\x1b[0m`);
-    });
+        let finalOutput = "";
 
-    compiler.on("close", (compilationResult) => {
-        if (compilationResult !== 0) {
-            cleanUp([filePath,outPath]);
-            res.end();
-            return ;
-        }
+        compiler.stderr.on("data", (data) => {
+            finalOutput += `\x1b[31m${data.toString()}\x1b[0m`;
+        });
 
-        executeCode(config, filePath, outPath, input, res);
-    });
+        compiler.on("close", async (compilationResult) => {
+            if (compilationResult !== 0) {
+                cleanUp([filePath, outPath]);
+                resolve(finalOutput);
+                return;
+            }
+
+            const executionOutput = await executeCode(config, filePath, outPath, input);
+            resolve(executionOutput);
+        });
+    })
 }

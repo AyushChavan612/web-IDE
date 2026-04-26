@@ -17,6 +17,7 @@ export default async function setupOptimization(editor: any, language: HTMLSelec
 
         if (!userCode.trim()) {
             window.alert("There's no code in the editor");
+            errorButton.disabled = false; 
             return;
         }
 
@@ -35,7 +36,8 @@ export default async function setupOptimization(editor: any, language: HTMLSelec
             });
 
             if (!response.ok) {
-                throw new Error("Optimization engine failed.");
+                const errData = await response.json();
+                throw new Error(errData.error || "Unknown backend error occurred.");
             }
 
             const data = await response.json(); 
@@ -47,9 +49,9 @@ export default async function setupOptimization(editor: any, language: HTMLSelec
 
             optimizeModal.style.display = "flex";
 
-        } catch (error) {
+        } catch (error: any) {
             console.error("Optimization Error:", error);
-            window.alert("Failed to reach the AI Engine.");
+            window.alert(error.message);
         } finally {
             optimizeButton.innerText = "OPTIMIZE";
             optimizeButton.disabled = false;

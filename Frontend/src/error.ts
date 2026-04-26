@@ -5,11 +5,11 @@ export default function fixErrors (
     inputArea : HTMLTextAreaElement) : void {
      
     const errorButton = document.getElementById("error-btn") as HTMLButtonElement;
-    const errorModel = document.getElementById("fixErrorModel") as HTMLDivElement;
-    const applyOptBtn = document.getElementById("apply-opt-btn") as HTMLButtonElement;
-    const closeOptBtn = document.getElementById("close-opt-btn") as HTMLButtonElement;
-    const analysisArea = document.getElementById("explaination") as HTMLSpanElement;
-    const codeBlock = document.getElementById("opt-code") as HTMLElement;
+    const errorModal = document.getElementById("fixErrorModal") as HTMLDivElement;
+    const applyErrorBtn = document.getElementById("apply-error-btn") as HTMLButtonElement;
+    const closeErrorBtn = document.getElementById("close-error-btn") as HTMLButtonElement;
+    const analysisArea = document.getElementById("error-explanation") as HTMLSpanElement;
+    const codeBlock = document.getElementById("error-code") as HTMLElement;
     const optimizeButton = document.getElementById("optimize-btn") as HTMLButtonElement;
 
     errorButton.addEventListener("click" , async () => {
@@ -41,7 +41,8 @@ export default function fixErrors (
             });
 
             if (!response.ok) {
-                throw new Error("FixError engine failed.");
+                const errData = await response.json();
+                throw new Error(errData.error || "Unknown backend error occurred.");
             }
 
             const data = await response.json(); 
@@ -49,12 +50,12 @@ export default function fixErrors (
             analysisArea.innerText = data.explaination;
             codeBlock.innerText = data.fixedCode;
 
-            errorModel.style.display = "flex";
+            errorModal.style.display = "flex";
 
         }
-        catch (error) {
+        catch (error: any) {
             console.error("FixErrorModel Error:", error);
-            window.alert("Failed to reach the AI Engine.");
+            window.alert(error.message);
         } finally {
             errorButton.innerText = "Fix Errors";
             errorButton.disabled = false;
@@ -62,12 +63,12 @@ export default function fixErrors (
         }
     });
 
-    closeOptBtn.addEventListener("click", () => {
-        errorModel.style.display = "none";
+    closeErrorBtn.addEventListener("click", () => {
+        errorModal.style.display = "none";
     });
 
-    applyOptBtn.addEventListener("click", () => {
+    applyErrorBtn.addEventListener("click", () => {
         editor.setValue(codeBlock.innerText);
-        errorModel.style.display = "none";
+        errorModal.style.display = "none";
     });  
 }

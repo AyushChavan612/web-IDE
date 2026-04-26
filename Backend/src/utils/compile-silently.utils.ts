@@ -20,8 +20,8 @@ export default async function compileSilently(
             })
         });
 
-        const outputText = await response.text();
-
+        const data = await response.json();
+        const outputText = data.output || "";
         if (outputText.includes('\x1b[31m')) {
             return false;
         }

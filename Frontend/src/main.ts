@@ -1,7 +1,7 @@
 import loader from "@monaco-editor/loader";
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
-import  setupOptimization  from "./optimize.js";
+import setupOptimization from "./optimize.js";
 import fixErrors from "./error.js";
 import "@xterm/xterm/css/xterm.css";
 
@@ -71,26 +71,18 @@ loader.init().then((monaco) => {
                     })
                });
 
-               const reader = response.body?.getReader();
-               const decoder = new TextDecoder();
-
-               if (!reader) {
-                    throw new Error("Failed to read the stream from the server");
+               if (!response.ok) {
+                    const errData = await response.json();
+                    throw new Error(errData.error || "Execution failed on the server.");
                }
 
-               while (true) {
-                    const { done, value } = await reader.read();
-
-                    if (done) {
-                         break;
-                    }
-
-                    let chunk = decoder.decode(value, { stream: true });
-                    terminal.write(chunk);
-               }
+               const data = await response.json();
+               terminal.write(data.output || "Execution finished with no output.");
+               
           }
-          catch (error) {
+          catch (error: any) {
                console.error("Error communicating with backend:", error);
+               terminal.write(`\r\n\x1b[31mSystem Error: ${error.message}\x1b[0m`);
           }
           finally {
                runButton.innerText = "RUN";
@@ -120,4 +112,3 @@ loader.init().then((monaco) => {
      setupOptimization(editor, language);
      fixErrors(editor , language , terminalContainer , inputText);
 });
-

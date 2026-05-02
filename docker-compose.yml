@@ -1,0 +1,57 @@
+services:
+  redis:
+    image: redis:alpine
+    container_name: devflow-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - devflow-network
+
+  image-prepuller:
+    image: docker:latest
+    container_name: devflow-prepuller
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: >
+     sh -c "docker pull gcc:latest && 
+             docker pull eclipse-temurin:17 && 
+             docker pull python:latest && 
+             docker pull node:latest"
+    networks:
+      - devflow-network
+
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: devflow-backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./Backend/temp:/app/temp 
+    environment:
+      - REDIS_HOST=devflow-redis
+      - REDIS_PORT=6379
+    depends_on:
+      redis:
+        condition: service_started
+      image-prepuller:
+        condition: service_started
+    networks:
+      - devflow-network
+
+  frontend:
+    build:
+      context: ./Frontend
+    container_name: devflow-frontend
+    ports:
+      - "4173:4173"
+    depends_on:
+      - backend
+    networks:
+      - devflow-network
+
+networks:
+  devflow-network:
+    driver: bridge

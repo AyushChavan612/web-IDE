@@ -12,7 +12,7 @@ export class RedisQueueAdapter implements IQueueServices {
         if (!this.queues.has(queueName)) {
             const newQueue = new Queue(queueName, {
                 connection: {
-                    host: process.env.REDIS_HOST || "127.0.0.1",
+                    host: process.env.REDIS_HOST || "redis",
                     port: parseInt(process.env.REDIS_PORT || "6379")
                 }
             });

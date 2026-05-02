@@ -57,9 +57,9 @@ loader.init().then((monaco) => {
           runButton.innerText = "Running...";
           runButton.disabled = true;
           
-          const compilerApiUrl = import.meta.env.VITE_COMPILER_API_URL as string;
+          // const compilerApiUrl = import.meta.env.VITE_COMPILER_API_URL as string;
           try {
-               const response = await fetch(compilerApiUrl, {
+               const response = await fetch("http://localhost:3000/compile", {
                     method: "POST",
                     headers: {
                          "Content-Type": "application/json",

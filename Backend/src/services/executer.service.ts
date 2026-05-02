@@ -1,5 +1,4 @@
 import { spawn } from "child_process";
-import { type Response } from "express";
 import type { LanguageConfig } from "../config/languages.config.js";
 import cleanUp from "../utils/deletefiles.utils.js";
 
@@ -12,8 +11,11 @@ export default function executeCode(
 
     return new Promise((resolve) => {
         const { command, args } = config.getExecutionCommand(outPath);
+        const timeoutMs = config?.timeoutMs;
 
-        const execution = spawn(command, args);
+        const execution = spawn(command, args , {
+            timeout : timeoutMs
+        });
 
         if (input) {
             execution.stdin.write(input);
@@ -29,11 +31,17 @@ export default function executeCode(
             finalOutput += `\x1b[31m${data.toString()}\x1b[0m`;
         });
 
-        execution.on("close", (executionResult) => {
+        execution.on("close", (executionResult,signal) => {
             if (config.isCompiled) {
                 cleanUp([filePath, outPath]);
             } else {
                 cleanUp([outPath]);
+            }
+            if(signal === "SIGTERM"){
+                finalOutput += "\nTime Limit Exceeded (TLE) considering platform limits"
+            }
+            else if(executionResult === 137){
+                finalOutput += "\nMemory Limit Exceeded (MLE) considering platform limits"
             }
             resolve(finalOutput);
         });

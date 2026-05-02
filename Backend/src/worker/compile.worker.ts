@@ -19,7 +19,7 @@ const compileWorker = new Worker(
         let filePath = "";
         let outPath = "";
 
-        await fileManager.mkdir(executionDir);
+        await fileManager.mkdir(executionDir, { recursive: true });
 
         if (config.extension !== "java") {
             filePath = join(TEMP_PATH, `${fileId}.${config.extension}`);
@@ -46,7 +46,7 @@ const compileWorker = new Worker(
         return finalResult;
     },
     {
-        connection: { host: "127.0.0.1", port: 6379 },
+        connection: { host: "redis", port: 6379 },
         concurrency: 5 
     }
 );

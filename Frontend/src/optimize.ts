@@ -1,3 +1,13 @@
+async function safeJsonParse(response: Response): Promise<any> {
+    const text = await response.text();
+    if (!text) throw new Error("Server returned an empty response.");
+    try {
+        return JSON.parse(text);
+    } catch {
+        throw new Error(`Server error: ${text.substring(0, 200)}`);
+    }
+}
+
 export default async function setupOptimization(editor: any, language: HTMLSelectElement) {
 
     const optimizeButton = document.getElementById("optimize-btn") as HTMLButtonElement;
@@ -35,12 +45,11 @@ export default async function setupOptimization(editor: any, language: HTMLSelec
                 })
             });
 
-            if (!response.ok) {
-                const errData = await response.json();
-                throw new Error(errData.error || "Unknown backend error occurred.");
-            }
+            const data = await safeJsonParse(response);
 
-            const data = await response.json(); 
+            if (!response.ok) {
+                throw new Error(data.error || "Unknown backend error occurred.");
+            }
 
             optTime.innerText = data.timeComplexity;
             optSpace.innerText = data.spaceComplexity;

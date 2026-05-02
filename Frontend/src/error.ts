@@ -1,3 +1,13 @@
+async function safeJsonParse(response: Response): Promise<any> {
+    const text = await response.text();
+    if (!text) throw new Error("Server returned an empty response.");
+    try {
+        return JSON.parse(text);
+    } catch {
+        throw new Error(`Server error: ${text.substring(0, 200)}`);
+    }
+}
+
 export default function fixErrors (
     editor : any , 
     language : HTMLSelectElement ,
@@ -40,12 +50,11 @@ export default function fixErrors (
                 })
             });
 
-            if (!response.ok) {
-                const errData = await response.json();
-                throw new Error(errData.error || "Unknown backend error occurred.");
-            }
+            const data = await safeJsonParse(response);
 
-            const data = await response.json(); 
+            if (!response.ok) {
+                throw new Error(data.error || "Unknown backend error occurred.");
+            }
 
             analysisArea.innerText = data.explaination;
             codeBlock.innerText = data.fixedCode;
